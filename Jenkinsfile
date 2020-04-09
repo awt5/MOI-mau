@@ -12,6 +12,11 @@ pipeline {
                 sh 'java -version"'
             }
         }
+        stage('Publish to Artifactory'){
+            steps{
+                sh 'exit -1'
+            }
+        }
         stage('Deploy'){
             parallel{
                 stage('DeployToDevEnv'){
