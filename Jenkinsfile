@@ -35,7 +35,7 @@ pipeline {
         }
     }
     environment {
-        EMAIL_TEAM = 'geralt702@gmail.com,mauricio.oroza@fundacion-jala.org'
+        EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
         EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
         EMAIL_ME = 'mau.oroza1@gmail.comn'
     }
@@ -56,5 +56,6 @@ pipeline {
                  subject: "${currentBuild.currentResult} Pipeline: ${currentBuild.fullDisplayName}",
                  body: "Something is wrong with ${env.BUILD_URL}"
         }
+    }
         
 }
