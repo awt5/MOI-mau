@@ -50,11 +50,13 @@ pipeline {
             mail to: "${EMAIL_ME}", 
                  subject: "${currentBuild.currentResult} Pipeline: ${env.JOB_NAME}${env.BUILD_NUMBER}",
                  body: "The pipeline ${env.BUILD_URL} has been well executed"
+                 sh 'echo "Sending mail succsess"'
         }
         failure {
             mail to: "${EMAIL_TEAM}",
                  subject: "${currentBuild.currentResult} Pipeline: ${currentBuild.fullDisplayName}",
                  body: "Something is wrong with ${env.BUILD_URL}"
+                 sh 'echo "Sending mail failure"'
         }
     }
         
