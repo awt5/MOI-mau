@@ -44,6 +44,7 @@ pipeline {
             mail to: "${EMAIL_ADMIN}", 
                  subject: "${currentBuild.currentResult} Pipeline: ${currentBuild.fullDisplayName}",
                  body: "The pipeline ${env.BUILD_URL} has been executed."
+                 sh 'echo "Sending mail always"'
         }
         success {
             mail to: "${EMAIL_ME}", 
