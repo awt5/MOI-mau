@@ -8,25 +8,26 @@ pipeline {
         }
         stage('Unit test'){
             steps{
-                sh 'ehco "Running the tests"'
-                sh 'java -version"'
+                sh 'echo "Running the tests"'
+                //sh 'java -version"'
             }
         }
         stage('Publish to Artifactory'){
             steps{
-                sh 'exit -1'
+                sh 'echo "Running the tests"'
+                //sh 'exit -1'
             }
         }
         stage('Deploy'){
             parallel{
                 stage('DeployToDevEnv'){
                     steps{
-                        sh 'ehco "Deployong to dev enviorment"'
+                        sh 'echo "Deployong to dev enviorment"'
                     }
                 }
                 stage('DeployToQaEnv'){
                     steps{
-                        sh 'ehco "Deployong to QA enviorment"'
+                        sh 'echo "Deployong to QA enviorment"'
                     }
                 }
             }
