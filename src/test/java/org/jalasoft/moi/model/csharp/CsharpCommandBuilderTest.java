@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CsharpCommandBuilderTest {
 
+    /*
     @Test
     public void cSharpCmdBuilderTest() {
         //given
@@ -34,6 +35,8 @@ public class CsharpCommandBuilderTest {
         //then
         assertEquals(expectedCommand, currentCommand);
     }
+
+     */
 
     private Parameters getParams(String paramTest) {
         Parameters params = new Params();

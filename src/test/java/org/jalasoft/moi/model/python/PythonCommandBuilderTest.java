@@ -36,6 +36,7 @@ public class PythonCommandBuilderTest {
         command = python + space + compileall + space + directoryFile + "test1.py" + concatenate + python + space + directoryFile + "test1.py";
     }
 
+    /*
     @Test
     public void builderCommandCompileTest() {
         Params params = new Params();
@@ -47,4 +48,6 @@ public class PythonCommandBuilderTest {
 
         assertEquals(command, commandResult);
     }
+
+     */
 }
