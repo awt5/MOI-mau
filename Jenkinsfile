@@ -11,8 +11,8 @@ pipeline {
         stage('Sonarqube'){
             steps{
                 sh 'echo "Running SONAR SCAN"'
+                sh 'exit -1'
                 sh './gradlew sonarqube'
-                //sh 'exit -1'
             }
         }
         stage('Deploying'){
