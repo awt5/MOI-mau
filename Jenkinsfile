@@ -4,6 +4,8 @@ pipeline {
         stage('build'){
             steps{
                 sh 'echo "Start building app for moi-mau"'
+                sh 'chmod +x gradlew'
+                sh './gradlew clean assemble'
             }
         }
         stage('Unit test'){
