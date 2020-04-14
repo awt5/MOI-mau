@@ -12,6 +12,12 @@ pipeline {
                 sh 'java -version'
             }
         }
+        stage('Sonarqube'){
+            steps{
+                sh 'echo "Running SONAR SCAN"'
+                sh './gradlew sonarqube'
+            }
+        }
         stage('Publish to Artifactory'){
             steps{
                 sh 'echo "Running the tests"'
