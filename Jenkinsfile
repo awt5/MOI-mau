@@ -9,7 +9,7 @@ pipeline {
         stage('Unit test'){
             steps{
                 sh 'echo "Running the tests"'
-                //sh 'java -version"'
+                sh 'java -version"'
             }
         }
         stage('Publish to Artifactory'){
@@ -18,7 +18,7 @@ pipeline {
                 //sh 'exit -1'
             }
         }
-        stage('Deploy'){
+        stage('Deploying'){
             parallel{
                 stage('DeployToDevEnv'){
                     steps{
