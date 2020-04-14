@@ -34,25 +34,25 @@ pipeline {
     environment {
         EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
         EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
-        EMAIL_ME = 'mau.oroza1@gmail.comn'
+        EMAIL_ME = 'mau.oroza1@gmail.com'
     }
     post {
         always {
             mail to: "${EMAIL_ADMIN}", 
-                 subject: "${currentBuild.currentResult} Pipeline: ${currentBuild.fullDisplayName}",
-                 body: "Pipeline ${env.BUILD_URL} executed."
+                 subject: "${currentBuild.currentResult} on this pipeline-> ${currentBuild.fullDisplayName}",
+                 body: "The pipeline ${currentBuild.fullDisplayName} has been executed, refer to ${env.BUILD_URL} for more info."
                  sh 'echo "Sending mail always"'
         }
         success {
             mail to: "${EMAIL_ME}", 
-                 subject: "${currentBuild.currentResult} Pipeline: ${env.JOB_NAME}${env.BUILD_NUMBER}",
-                 body: "Pipeline ${env.BUILD_URL} succeded"
+                 subject: "${currentBuild.currentResult} on this pipeline-> ${env.JOB_NAME}${env.BUILD_NUMBER}",
+                 body: "The pipeline ${currentBuild.fullDisplayName} has succeeded, more info at ${env.BUILD_URL}"
                  sh 'echo "Sending mail succsess"'
         }
         failure {
             mail to: "${EMAIL_TEAM}",
                  subject: "${currentBuild.currentResult} on this pipeline-> ${currentBuild.fullDisplayName}",
-                 body: "Failed ${env.BUILD_URL}"
+                 body: "Something has go wrong in the pipeline ${currentBuild.fullDisplayName}, please se the logs at ${env.BUILD_URL}"
                  sh 'echo "Sending mail failure"'
         }
     }
