@@ -43,7 +43,7 @@ public class ExecuterTest {
     }
 
      */
-
+/*
     @Test
     public void throwsExceptionWhenCommandNullTest() {
         Executer executer = new Executer(new ProcessService());
@@ -56,4 +56,6 @@ public class ExecuterTest {
 
         assertEquals(expected, actual);
     }
+
+ */
 }
