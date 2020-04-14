@@ -1,28 +1,17 @@
 pipeline {
     agent any
     stages{
-        stage('build'){
+        stage('Build MOI'){
             steps{
                 sh 'echo "Start building app for moi-mau"'
                 sh 'chmod +x gradlew'
                 sh './gradlew clean assemble'
             }
         }
-        stage('Unit test'){
-            steps{
-                sh 'echo "Running the tests"'
-                sh 'java -version'
-            }
-        }
         stage('Sonarqube'){
             steps{
                 sh 'echo "Running SONAR SCAN"'
                 sh './gradlew sonarqube'
-            }
-        }
-        stage('Publish to Artifactory'){
-            steps{
-                sh 'echo "Running the tests"'
                 //sh 'exit -1'
             }
         }
@@ -62,7 +51,7 @@ pipeline {
         }
         failure {
             mail to: "${EMAIL_TEAM}",
-                 subject: "${currentBuild.currentResult} Pipeline: ${currentBuild.fullDisplayName}",
+                 subject: "${currentBuild.currentResult} on this pipeline-> ${currentBuild.fullDisplayName}",
                  body: "Failed ${env.BUILD_URL}"
                  sh 'echo "Sending mail failure"'
         }
