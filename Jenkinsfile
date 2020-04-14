@@ -39,7 +39,7 @@ pipeline {
     post {
         always {
             mail to: "${EMAIL_ADMIN}", 
-                 subject: "${currentBuild.currentResult} on this pipeline-> ${currentBuild.fullDisplayName}",
+                 subject: "Pipeline ${currentBuild.fullDisplayName} executed, status: ${currentBuild.currentResult}",
                  body: "The pipeline ${currentBuild.fullDisplayName} has been executed, refer to ${env.BUILD_URL} for more info."
                  sh 'echo "Sending mail always"'
         }
