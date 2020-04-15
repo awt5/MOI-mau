@@ -38,7 +38,7 @@ pipeline {
     }
     post {
         always {
-            junit 'build/reports/jacoco/**/*.xml'
+            junit 'build/reports/**/*.xml'
             //unit 'build/test-results/**/*.xml'
             mail to: "${EMAIL_ADMIN}", 
                  subject: "Pipeline-> ${currentBuild.fullDisplayName} executed, status: ${currentBuild.currentResult}",
