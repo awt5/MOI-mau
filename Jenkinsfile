@@ -38,12 +38,14 @@ pipeline {
     }
     post {
         always {
-            //junit 'build/reports/jacoco/test/**/*.xml
+            junit 'build/reports/jacoco/test/**/*.xml'
+            //junit 'build/test-results/**/*.xml'
             mail to: "${EMAIL_ADMIN}", 
                  subject: "Pipeline-> ${currentBuild.fullDisplayName} executed, status: ${currentBuild.currentResult}",
                  body: "The pipeline ${currentBuild.fullDisplayName} has been executed, refer to ${env.BUILD_URL} for more info."
                  sh 'echo "Sending mail always"'
         }
+
         success {
             mail to: "${EMAIL_ME}", 
                  subject: "${currentBuild.currentResult} on this pipeline-> ${env.JOB_NAME}${env.BUILD_NUMBER}",
