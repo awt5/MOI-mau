@@ -4,6 +4,7 @@ pipeline {
         stage('Build MOI'){
             steps{
                 sh 'echo "Start building app for moi-mau"'
+                sh 'echo "Giving gradle permissions..."'
                 sh 'chmod +x gradlew'
                 sh './gradlew clean build'
             }
