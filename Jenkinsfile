@@ -4,8 +4,7 @@ pipeline {
         stage('Build MOI'){
             steps{
                 sh 'echo "Start building app for moi-mau"'
-                sh 'chmod +x gradlew'
-                sh './gradlew clean assemble'
+                sh './gradlew clean build'
             }
         }
         stage('Sonarqube'){

@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id "org.sonarqube" version "2.8"
+    id 'jacoco'
 }
 
 group 'org.jalasoft.moi'
@@ -15,13 +16,27 @@ repositories {
 }
 
 sonarqube {
-  properties {
-    property "sonar.projectKey", "awt5_MOI-mau"
-    property "sonar.organization", "awt5"
-    property "sonar.host.url", "https://sonarcloud.io"
-    property "sonar.login", "671317cf7c2429d3d5251e36836f07ceb80ad317"
-  }
+    properties {
+        property "sonar.projectKey", "awt5_MOI-mau"
+        property "sonar.organization", "awt5"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.login", "671317cf7c2429d3d5251e36836f07ceb80ad317"
+    }
 }
+
+jacoco {
+    toolVersion = '0.8.1'
+}
+
+jacocoTestReport {
+    reports {
+        csv.enabled = false
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+test.finalizedBy(jacocoTestReport)
 
 dependencies {
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
