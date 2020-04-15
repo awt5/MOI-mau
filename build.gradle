@@ -60,7 +60,7 @@ sonarqube {
         property "sonar.login", "671317cf7c2429d3d5251e36836f07ceb80ad317"
 
         property "sonar.junit.reportsPath", "build/test-results/test"
-        property "sonar.java.coveragePlugin", "jacoco"	        ç
+        property "sonar.java.coveragePlugin", "jacoco"
 
         property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml"
 
