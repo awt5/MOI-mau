@@ -13,6 +13,16 @@ pipeline {
                 sh 'chmod +x gradlew'
                 sh './gradlew clean build'
             }
+            post {
+                always{
+                    junit 'build/test-results/**/*.xml'
+                    publishHTML (target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/jacoco/test/html', reportFiles: 'index.html', reportName: "Test Coverage"])
+                    publishHTML (target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: "Test Report"])
+                }
+                success {
+                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                }
+            }
         }
         stage('Sonarqube-Code Quality'){
             steps{
@@ -24,8 +34,18 @@ pipeline {
         stage('DeployToDevEnv'){
             steps{
                 sh 'echo "Deployong to dev enviorment"'
+                sh 'echo "Running acceptance testing"'
+            }
+            post {
+                success {
+                    sh 'echo "Saving jar..."'
+                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                }
             }
         }
+
+
+
 
         stage('Publishing to artifactory'){
             parallel{
@@ -100,7 +120,6 @@ pipeline {
 
     post {
         always {
-            junit 'build/test-results/**/*.xml'
             mail to: "${EMAIL_ADMIN}", 
                  subject: "Pipeline-> ${currentBuild.fullDisplayName} executed, status: ${currentBuild.currentResult}",
                  body: "The pipeline ${currentBuild.fullDisplayName} has been executed, refer to ${env.BUILD_URL} for more info."
