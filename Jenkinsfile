@@ -14,15 +14,34 @@ pipeline {
                 sh './gradlew clean build'
             }
         }
-        stage('Sonarqube'){
+        stage('Sonarqube-Code Quality'){
             steps{
                 sh 'echo "Running SONAR SCAN"'
                 //sh 'exit -1'
                 sh './gradlew sonarqube'
             }
         }
-        stage('Publishing to artifactory'){
+        stage('DeployToDevEnv'){
             steps{
+                sh 'echo "Deployong to dev enviorment"'
+
+
+            }
+        }
+        stage('Publishing to artifactory'){
+            when {
+                branch 'develop'
+            }
+            steps{
+                sh 'echo"publishing to release"'
+                sh './gradlew artifactoryPublish'
+            }
+            when {
+                branch 'master'
+            }
+                steps{
+                    sh 'echo"publishing to release"'
+                }
                  sh './gradlew sonarqube'
                  //master a release
                  //develop a local
