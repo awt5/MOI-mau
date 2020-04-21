@@ -11,7 +11,9 @@ pipeline {
                 sh 'echo "Start building app for moi-mau"'
                 sh 'echo "Giving gradle permissions..."'
                 sh 'chmod +x gradlew'
+                //agregar caso en que falle sh 'exit -1'
                 sh './gradlew clean build'
+                //agregar caso en que falle sh 'exit -1'
             }
             post {
                 always{
@@ -30,7 +32,7 @@ pipeline {
         }
         stage('DeployToDevEnv'){
             steps{
-                sh 'echo "Deployong to dev enviorment"'
+                sh 'echo "Deploying to dev environment"'
                 sh 'echo "Running acceptance testing"'
             }
             post {
@@ -39,7 +41,7 @@ pipeline {
                     archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
                 }
             }
-        }
+        }//Acceptance testing in other stage
 
 
 
