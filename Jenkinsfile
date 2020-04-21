@@ -19,9 +19,6 @@ pipeline {
                     publishHTML (target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/jacoco/test/html', reportFiles: 'index.html', reportName: "Test Coverage"])
                     publishHTML (target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: "Test Report"])
                 }
-                success {
-                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
-                }
             }
         }
         stage('Sonarqube-Code Quality'){
@@ -79,6 +76,11 @@ pipeline {
                 sh 'echo "Deployong to QA enviorment"'
             }
         }
+        stage('RunAutomationTests'){
+            steps{
+                sh 'echo "RunningAutoTests"'
+            }
+        }
         /*
 
         stage('Publishing to artifactory'){
@@ -101,6 +103,16 @@ pipeline {
             }
         }*/
 
+
+        stage('Clean'){
+            steps{
+                //sh 'sudo docker rmi $(sudo docker images -aq -f 'dangling=true')'
+            }
+        }
+
+
+
+        /*
         stage('Deploying'){
             parallel{
                 stage('DeployToDevEnv'){
@@ -115,7 +127,7 @@ pipeline {
                 }
             }
             
-        }
+        }*/
     }
 
     post {
