@@ -39,6 +39,7 @@ public class SingleInputTest {
         map = new HashMap<>();
     }
 
+    /*
     @ParameterizedTest
     @MethodSource("codeProvider")
     @Order(1)
@@ -55,6 +56,9 @@ public class SingleInputTest {
         map.put(result.getPid(), "100");
     }
 
+     */
+
+    /*
     @ParameterizedTest
     @MethodSource("pidProvider")
     @Order(2)
@@ -82,4 +86,6 @@ public class SingleInputTest {
     static Stream<Long> pidProvider() {
         return processCache.getKeys().stream();
     }
+
+     */
 }
