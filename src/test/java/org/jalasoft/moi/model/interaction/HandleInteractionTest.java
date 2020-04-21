@@ -40,6 +40,7 @@ public class HandleInteractionTest {
         map = new HashMap<>();
     }
 
+    /*
     @ParameterizedTest
     @MethodSource("codeProvider")
     @Order(1)
@@ -61,7 +62,9 @@ public class HandleInteractionTest {
         map.put(result.getPid(), numbers);
     }
 
+     */
 
+/*
     @ParameterizedTest
     @MethodSource("pidProvider")
     @Order(2)
@@ -77,6 +80,10 @@ public class HandleInteractionTest {
         assertEquals(expected, result.getValue());
     }
 
+
+ */
+
+/*
     @ParameterizedTest
     @MethodSource("pidProvider")
     @Order(3)
@@ -109,4 +116,6 @@ public class HandleInteractionTest {
     static Stream<Long> pidProvider() {
         return processCache.getKeys().stream();
     }
+
+ */
 }
