@@ -54,7 +54,7 @@ pipeline {
                             branch 'jenkins-c'
                         }
                         steps{
-                            sh 'echo"publishing to local"'
+                            sh 'echo "Publishing to local..."'
                             sh './gradlew artifactoryPublish'
                         }
 
