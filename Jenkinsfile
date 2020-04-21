@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    environment {
+            EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
+            EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
+            EMAIL_ME = 'mau.oroza1@gmail.com'
+    }
     stages{
         stage('Build MOI'){
             steps{
@@ -16,6 +21,14 @@ pipeline {
                 sh './gradlew sonarqube'
             }
         }
+        stage('Publishing to artifactory'){
+            steps{
+                 sh './gradlew sonarqube'
+                 //master a release
+                 //develop a local
+            }
+        }
+
         stage('Deploying'){
             parallel{
                 stage('DeployToDevEnv'){
@@ -32,11 +45,7 @@ pipeline {
             
         }
     }
-    environment {
-        EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
-        EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
-        EMAIL_ME = 'mau.oroza1@gmail.com'
-    }
+
     post {
         always {
             junit 'build/test-results/**/*.xml'

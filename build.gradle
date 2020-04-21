@@ -1,9 +1,11 @@
 plugins {
     id 'jacoco'
     id 'java'
+    id 'maven-publish'
     id 'org.springframework.boot' version '2.2.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id "org.sonarqube" version "2.8"
+    id 'com.jfrog.artifactory' version '4.9.8'
 }
 
 group 'org.jalasoft.moi'
@@ -12,6 +14,14 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
+    /*
+    maven {
+        url 'http://localhost:8081/artifactory/libs-release'
+        credentials {
+            username = "admin"
+            password = "jfrogmau"
+        }
+    }*/
     mavenCentral()
 }
 
@@ -25,6 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt:0.2'
+    //implementation "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -74,45 +85,29 @@ jacocoTestReport {
 }
 test.finalizedBy(jacocoTestReport)
 
-buildscript {
-    repositories {
-        maven {
-            url 'http://localhost:8081/artifactory/libs-release'
-            credentials {
-                username = "${artifactory_user}"
-                password = "${artifactory_password}"
-            }
-        }
 
-    }
-    dependencies {
-        //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
-    }
-}
 
-allprojects {
-    apply plugin: "com.jfrog.artifactory"
-}
 
 artifactory {
     contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
     publish {
         repository {
-            repoKey = 'RepoTest'
+            repoKey = 'libs-snapshot-local'
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
 
         }
+        defaults {
+            publications ('mavenJava')
+        }
     }
-    resolve {
-        repository {
-            repoKey = 'libs-snapshot'
-            username = "${artifactory_user}"
-            password = "${artifactory_password}"
-            maven = true
+}
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
         }
     }
 }
