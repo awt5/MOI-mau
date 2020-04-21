@@ -24,10 +24,38 @@ pipeline {
         stage('DeployToDevEnv'){
             steps{
                 sh 'echo "Deployong to dev enviorment"'
-
-
             }
         }
+
+        stage('Publishing to artifactory'){
+            parallel{
+                stage('Publishing to local'){
+                    steps{
+                        when {
+                            branch 'develop'
+                        }
+                        steps{
+                            sh 'echo"publishing to release"'
+                            sh './gradlew artifactoryPublish'
+                        }
+                    }
+                }
+                stage('Publishing to release'){
+                    steps{
+                        when {
+                            branch 'develop'
+                        }
+                        steps{
+                            sh 'echo"publishing to release"'
+                            sh './gradlew artifactoryPublish'
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+
         stage('Publishing to artifactory'){
             when {
                 branch 'develop'
@@ -46,7 +74,7 @@ pipeline {
                  //master a release
                  //develop a local
             }
-        }
+        }*/
 
         stage('Deploying'){
             parallel{
