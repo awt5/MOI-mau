@@ -106,6 +106,8 @@ pipeline {
 
         stage('Clean'){
             steps{
+                sh 'echo"publishing to release"'
+
                 //sh 'sudo docker rmi $(sudo docker images -aq -f 'dangling=true')'
             }
         }
