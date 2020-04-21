@@ -49,14 +49,18 @@ pipeline {
         stage('Publishing to artifactory'){
             parallel{
                 stage('Publishing to local'){
+                steps{
 
                         when {
                             branch 'jenkins-c'
                         }
                         steps{
                             sh 'echo "Publishing to local..."'
+                            sh 'echo "Running test"'
                             sh './gradlew artifactoryPublish'
+
                         }
+                }
 
                 }
                 stage('Publishing to release'){
