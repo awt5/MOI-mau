@@ -30,7 +30,7 @@ pipeline {
         stage('Publishing to artifactory'){
             parallel{
                 stage('Publishing to local'){
-                    steps{
+
                         when {
                             branch 'jenkins-c'
                         }
@@ -38,10 +38,10 @@ pipeline {
                             sh 'echo"publishing to local"'
                             sh './gradlew artifactoryPublish'
                         }
-                    }
+
                 }
                 stage('Publishing to release'){
-                    steps{
+
                         when {
                             branch 'master'
                         }
@@ -49,7 +49,7 @@ pipeline {
                             sh 'echo"publishing to release"'
                             sh './gradlew artifactoryPublish'
                         }
-                    }
+
                 }
             }
         }
