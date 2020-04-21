@@ -56,7 +56,7 @@ pipeline {
 
         stage('DeployToQAEnv'){
             steps{
-                sh 'echo "Deployong to dev enviorment"'
+                sh 'echo "Deployong to QA enviorment"'
             }
         }
         /*
