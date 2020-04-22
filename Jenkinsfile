@@ -6,7 +6,7 @@ pipeline {
             EMAIL_ME = 'mau.oroza1@gmail.com'
             //dockerhub
             PROJECT_NAME = 'moi-project'
-            DOCKER_CREDS = 'docker-credis'
+            DOCKER_CR = 'docker-credis'
             USER_DOCKER_HUB = 'snip77'
     }
     stages{
@@ -87,7 +87,7 @@ pipeline {
                 branch 'jenkins-c' //develop
             }
             steps{
-                withDockerRegistry([ credentialsId: "${DOCKER_CREDS}", url: "https://index.docker.io/v1/" ]) {
+                withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
                     sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v1.0-$BUILD_NUMBER'
                     sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
                 }
