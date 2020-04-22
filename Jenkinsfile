@@ -60,7 +60,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'jenkins-c'
+                        branch 'develop'
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
@@ -81,7 +81,7 @@ pipeline {
         }
         stage('Publish To Docker Hub'){ 
             when {
-                branch 'jenkins-c' //develop
+                branch 'develop' //develop
             }
             steps{
                 withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
