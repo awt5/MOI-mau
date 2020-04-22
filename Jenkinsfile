@@ -91,8 +91,14 @@ pipeline {
             }
         }
         stage('DeployToQAEnv'){
+            environment {
+                APP_PORT=9096
+                DB_PORT=3036
+            }
             steps{
-                sh 'echo "Deployong to QA enviorment"'
+                sh 'echo "Deploying to QA environment"'
+                sh 'docker-compose config'
+                sh 'docker-compose up -d'
             }
         }
         stage('RunAutomationTests'){
