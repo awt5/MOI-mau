@@ -4,6 +4,10 @@ pipeline {
             EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
             EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
             EMAIL_ME = 'mau.oroza1@gmail.com'
+
+            PROJECT_NAME = 'moi-project'
+            DOCKER_CREDS = 'docker-credis'
+            USER_DOCKER_HUB = 'snip77'
     }
     stages{
         stage('Build MOI'){
@@ -13,7 +17,6 @@ pipeline {
                 sh 'chmod +x gradlew'
                 //agregar caso en que falle sh 'exit -1'
                 sh './gradlew clean build'
-                //agregar caso en que falle sh 'exit -1'
             }
             post {
                 always{
@@ -33,7 +36,15 @@ pipeline {
         stage('DeployToDevEnv'){
             steps{
                 sh 'echo "Deploying to dev environment"'
-                sh 'echo "Running acceptance testing"'
+                sh 'docker-compose config'
+                sh 'docker-compose build'
+                sh 'docker-compose up -d'
+            }
+        }
+        //Acceptance testing in other stage
+        stage('Run Acceptance Tests'){
+            steps{
+                echo 'Running acceptance testing'
             }
             post {
                 success {
@@ -41,10 +52,8 @@ pipeline {
                     archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
                 }
             }
-        }//Acceptance testing in other stage
-
-
-
+        }
+        
 
         stage('Publishing to artifactory'){
             parallel{
@@ -57,8 +66,6 @@ pipeline {
                         sh 'echo "Running test"'
                         sh './gradlew artifactoryPublish'
                     }
-
-
                 }
                 stage('Publishing to release'){
 
@@ -107,6 +114,28 @@ pipeline {
         }*/
 
 
+        stage('Publish To Docker Hub'){
+            steps{
+                sh 'echo "publishing to Dockerhub"'
+            }
+        }
+
+        stage('DeployToQaEnv'){
+            steps{
+                sh 'echo "Deployong to QA enviorment"'
+            }
+        }
+
+        stage('Automation Testing'){
+            when {
+                branch 'develop'
+            }
+            steps{
+                echo 'Running automation test'
+            }
+        }
+
+
         stage('Clean'){
             steps{
                 sh 'echo "publishing to release"'
@@ -114,6 +143,7 @@ pipeline {
                 //sh 'sudo docker rmi $(sudo docker images -aq -f 'dangling=true')'
             }
         }
+
 
 
 
