@@ -72,7 +72,7 @@ pipeline {
                         branch 'master'
                     }
                     steps{
-                        sh 'echo"publishing to release"'
+                        sh 'echo "publishing to release"'
                         sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish'
                     }
                 }
@@ -116,7 +116,7 @@ pipeline {
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
-                sh 'docker rmi $(docker images -aq -f dangling=true)'
+                //sh 'docker rmi $(docker images -aq -f dangling=true)'
             }
         }
     }
