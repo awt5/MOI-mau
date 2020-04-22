@@ -10,3 +10,19 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5Dialect
     database: mysql
     show-sql: true
+#to mount the database in a docker conainer
+#docker run -d -p 33061:3306 --name moi-mysql-home -e MYSQL_ROOT_PASSWORD=root mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+---
+  spring:
+    datasource:
+      url: jdbc:mysql://moi-database:3306/mysql
+      username: root
+      password: root
+      initialization-mode: always
+    jpa:
+      hibernate:
+        ddl-auto: create
+      database-platform: org.hibernate.dialect.MySQL5Dialect
+      database: mysql
+      show-sql: true
+    profiles: docker
