@@ -92,8 +92,8 @@ pipeline {
         }
         stage('DeployToQAEnv'){
             environment {
-                APP_PORT=9096
-                DB_PORT=3036
+                APP_PORT=9097
+                DB_PORT=3037
             }
             steps{
                 sh 'echo "Deploying to QA environment"'
