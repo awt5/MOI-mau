@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'org.jalasoft.moi'
-version '1.0-SNAPSHOT'
+version = "${moi_version}"
 
 sourceCompatibility = 1.8
 
@@ -92,7 +92,7 @@ artifactory {
     contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
     publish {
         repository {
-            repoKey = 'libs-snapshot-local'
+            repoKey = "${artifactory_repokey}"
             username = "${artifactory_user}"
             password = "${artifactory_password}"
             maven = true
