@@ -101,17 +101,12 @@ pipeline {
                 sh 'docker-compose up -d'
             }
         }
-        stage('RunAutomationTests'){
-            steps{
-                sh 'echo "RunningAutoTests"'
-            }
-        }
-        stage('Automation Testing'){
+        stage('Run Automation Tests'){
             when {
                 branch 'develop'
             }
             steps{
-                echo 'Running automation test'
+                echo 'Running automation tests'
             }
         }
         stage('Clean'){

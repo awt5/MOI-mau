@@ -8,7 +8,7 @@ plugins {
     id 'com.jfrog.artifactory' version '4.9.8'
 }
 
-group 'org.jalasoft.moi'
+group = "${moi_version}" 
 version = "${moi_version}"
 
 sourceCompatibility = 1.8
