@@ -115,6 +115,10 @@ pipeline {
             }
         }
         stage('Clean'){
+            environment {
+                //APP_PORT=9096
+                DB_PORT=3036
+            }
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
