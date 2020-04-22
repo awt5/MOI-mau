@@ -4,7 +4,7 @@ services:
     image: mysql:5.7
     container_name: moi-db-compose
     ports:
-      - "${DB_PORT}:3035"
+      - "${DB_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
   moi-app:
@@ -12,10 +12,7 @@ services:
     image: moi-project
     container_name: moi-app-compose
     ports:
-      - "${APP_PORT}:9095"
+      - "${APP_PORT}:9091"
     depends_on: 
       - moi-database
     restart: on-failure
-networks:
-  default:
-    name: promote-network
