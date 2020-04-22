@@ -15,11 +15,10 @@ pipeline {
                 sh 'echo "Start building app for moi-mau"'
                 sh 'echo "Giving gradle permissions..."'
                 sh 'chmod +x gradlew'
-                //agregar caso en que falle sh 'exit -1'
                 sh './gradlew clean build'
             }
             post {
-                always{
+                success{
                     junit 'build/test-results/**/*.xml'
                     publishHTML (target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/jacoco/test/html', reportFiles: 'index.html', reportName: "Test Coverage"])
                     publishHTML (target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'build/reports/tests/test', reportFiles: 'index.html', reportName: "Test Report"])
@@ -60,7 +59,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'develop'
+                        branch 'jenkins-c'
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
@@ -81,7 +80,7 @@ pipeline {
         }
         stage('Publish To Docker Hub'){ 
             when {
-                branch 'develop' //develop
+                branch 'jenkins-c' //develop
             }
             steps{
                 withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
@@ -117,7 +116,7 @@ pipeline {
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
-                //sh 'docker rmi $(docker images -aq -f dangling=true)'
+                sh 'docker rmi $(docker images -aq -f dangling=true)'
             }
         }
     }
