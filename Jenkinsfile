@@ -116,7 +116,7 @@ pipeline {
         }
         stage('Clean'){
             environment {
-                //APP_PORT=9096
+                APP_PORT=9096
                 DB_PORT=3036
             }
             steps{
