@@ -6,7 +6,7 @@ pipeline {
             EMAIL_ME = 'mau.oroza1@gmail.com'
             //for dockerhub:
             PROJECT_NAME = 'moi-project'
-            DOCKER_CR = 'docker-credis'
+            DOCKER_CR = 'docker-credentials'
             USER_DOCKER_HUB = 'snip77'
     }
     stages{
