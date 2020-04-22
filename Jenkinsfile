@@ -65,7 +65,7 @@ pipeline {
                     steps{
                         sh 'echo "Publishing to local..."'
                         sh 'echo "Running test"'
-                        sh './gradlew artifactoryPublish'
+                        sh './gradlew -Partifactory_repokey=libs-snapshot-local artifactoryPublish'
                     }
                 }
                 stage('Publishing to release'){
@@ -74,7 +74,7 @@ pipeline {
                     }
                     steps{
                         sh 'echo"publishing to release"'
-                        sh './gradlew artifactoryPublish'
+                        sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish'
                     }
                 }
             }
@@ -117,7 +117,7 @@ pipeline {
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
-                sh 'docker rmi $(docker images -aq -f dangling=true)'
+                //sh 'docker rmi $(docker images -aq -f dangling=true)'
             }
         }
     }
