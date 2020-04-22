@@ -34,6 +34,10 @@ pipeline {
             }
         }
         stage('DeployToDevEnv'){
+            environment {
+                APP_PORT=9096
+                APP_PORT=3036
+            }
             steps{
                 sh 'echo "Deploying to DEV environment"'
                 sh 'docker-compose config'
