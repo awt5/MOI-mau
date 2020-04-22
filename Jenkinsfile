@@ -4,7 +4,7 @@ pipeline {
             EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
             EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
             EMAIL_ME = 'mau.oroza1@gmail.com'
-            //dockerhub
+            //for dockerhub:
             PROJECT_NAME = 'moi-project'
             DOCKER_CR = 'docker-credis'
             USER_DOCKER_HUB = 'snip77'
@@ -35,13 +35,12 @@ pipeline {
         }
         stage('DeployToDevEnv'){
             steps{
-                sh 'echo "Deploying to dev environment"'
+                sh 'echo "Deploying to DEV environment"'
                 sh 'docker-compose config'
                 sh 'docker-compose build'
                 sh 'docker-compose up -d'
             }
         }
-        //Acceptance testing in other stage
         stage('Run Acceptance Tests'){
             steps{
                 echo 'Running acceptance testing'
@@ -53,8 +52,6 @@ pipeline {
                 }
             }
         }
-        
-
         stage('Publishing to artifactory'){
             parallel{
                 stage('Publishing to local'){
@@ -68,20 +65,16 @@ pipeline {
                     }
                 }
                 stage('Publishing to release'){
-
-                        when {
-                            branch 'master'
-                        }
-                        steps{
-                            sh 'echo"publishing to release"'
-                            sh './gradlew artifactoryPublish'
-                        }
-
+                    when {
+                        branch 'master'
+                    }
+                    steps{
+                        sh 'echo"publishing to release"'
+                        sh './gradlew artifactoryPublish'
+                    }
                 }
             }
         }
-
-
         stage('Publish To Docker Hub'){ 
             when {
                 branch 'jenkins-c' //develop
@@ -93,9 +86,6 @@ pipeline {
                 }
             }
         }
-
-
-
         stage('DeployToQAEnv'){
             steps{
                 sh 'echo "Deployong to QA enviorment"'
@@ -106,34 +96,6 @@ pipeline {
                 sh 'echo "RunningAutoTests"'
             }
         }
-        /*
-
-        stage('Publishing to artifactory'){
-            when {
-                branch 'develop'
-            }
-            steps{
-                sh 'echo"publishing to release"'
-                sh './gradlew artifactoryPublish'
-            }
-            when {
-                branch 'master'
-            }
-                steps{
-                    sh 'echo"publishing to release"'
-                }
-                 sh './gradlew sonarqube'
-                 //master a release
-                 //develop a local
-            }
-        }*/
-
-        stage('DeployToQaEnv'){
-            steps{
-                sh 'echo "Deployong to QA enviorment"'
-            }
-        }
-
         stage('Automation Testing'){
             when {
                 branch 'develop'
@@ -142,8 +104,6 @@ pipeline {
                 echo 'Running automation test'
             }
         }
-
-
         stage('Clean'){
             steps{
                 sh 'echo "publishing to release"'
@@ -151,28 +111,7 @@ pipeline {
                 //sh 'sudo docker rmi $(sudo docker images -aq -f 'dangling=true')'
             }
         }
-
-
-
-
-        /*
-        stage('Deploying'){
-            parallel{
-                stage('DeployToDevEnv'){
-                    steps{
-                        sh 'echo "Deployong to dev enviorment"'
-                    }
-                }
-                stage('DeployToQaEnv'){
-                    steps{
-                        sh 'echo "Deployong to QA enviorment"'
-                    }
-                }
-            }
-            
-        }*/
     }
-
     post {
         always {
             mail to: "${EMAIL_ADMIN}", 
@@ -193,6 +132,5 @@ pipeline {
                  body: "Something has go wrong in the pipeline ${currentBuild.fullDisplayName}, please se the logs at ${env.BUILD_URL}"
                  sh 'echo "Sending mail failure"'
         }
-    }
-        
+    }  
 }
