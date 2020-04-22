@@ -4,7 +4,7 @@ pipeline {
             EMAIL_TEAM = 'geralt702@gmail.com, mauricio.oroza@fundacion-jala.org'
             EMAIL_ADMIN = 'mauricio.oroza@fundacion-jala.org'
             EMAIL_ME = 'mau.oroza1@gmail.com'
-
+            //dockerhub
             PROJECT_NAME = 'moi-project'
             DOCKER_CREDS = 'docker-credis'
             USER_DOCKER_HUB = 'snip77'
@@ -80,6 +80,21 @@ pipeline {
                 }
             }
         }
+
+
+        stage('Publish To Docker Hub'){ 
+            when {
+                branch 'jenkins-c' //develop
+            }
+            steps{
+                withDockerRegistry([ credentialsId: "${DOCKER_CREDS}", url: "https://index.docker.io/v1/" ]) {
+                    sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v1.0-$BUILD_NUMBER'
+                    sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
+                }
+            }
+        }
+
+
 
         stage('DeployToQAEnv'){
             steps{
