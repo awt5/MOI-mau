@@ -3,10 +3,20 @@ services:
   moi-database:
     image: mysql:5.7
     container_name: moi-db-compose
-    command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
     ports:
-      - "33061:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-    volumes:
-      - databaseMoi:/var/lib/mysql
+  moi-app:
+    build: .
+    image: moi-project
+    container_name: moi-app-compose
+    ports:
+      - "9092:9091"
+    depends_on: 
+      - moi-database
+    restart: on-failure
+networks:
+  default:
+    name: promote-network
+    
