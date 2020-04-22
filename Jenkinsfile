@@ -116,7 +116,7 @@ pipeline {
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
-                //sh 'docker rmi $(docker images -aq -f dangling=true)'
+                sh 'docker rmi $(docker images -aq -f dangling=true)'
             }
         }
     }
