@@ -116,9 +116,9 @@ pipeline {
         }
         stage('Clean'){
             steps{
-                sh 'echo "publishing to release"'
-
-                //sh 'sudo docker rmi $(sudo docker images -aq -f 'dangling=true')'
+                sh 'echo "Cleaning..."'
+                sh 'docker-compose down -v'
+                sh 'docker rmi $(docker images -aq -f dangling=true)'
             }
         }
     }
