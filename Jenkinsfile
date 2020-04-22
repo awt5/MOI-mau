@@ -128,13 +128,6 @@ pipeline {
             }
         }*/
 
-
-        stage('Publish To Docker Hub'){
-            steps{
-                sh 'echo "publishing to Dockerhub"'
-            }
-        }
-
         stage('DeployToQaEnv'){
             steps{
                 sh 'echo "Deployong to QA enviorment"'
