@@ -117,6 +117,7 @@ pipeline {
                 anyOf{
                     branch 'jenkins-c'
                     branch 'master'
+                }
             }
             steps{
                 sh 'docker-compose down -v'
