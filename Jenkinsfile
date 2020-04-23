@@ -114,9 +114,12 @@ pipeline {
                 QA_HOME='/deployments/qa'
             }
             when {
-                branch 'develop' /////
+                anyOf{
+                    branch 'jenkins-c'
+                    branch 'master'
             }
             steps{
+                sh 'docker-compose down -v'
                 sh 'cp docker-compose.yml $QA_HOME'
                 sh 'echo "Deploying to QA environment"'
                 sh 'docker-compose -f $QA_HOME/docker-compose.yml down -v'
