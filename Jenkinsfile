@@ -111,7 +111,7 @@ pipeline {
                     }
                     steps{
                         withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
-                            sh 'docker tag ${PROJECT_NAME}:latest ${DOCKER_USER}/${PROJECT_NAME}:1.0'
+                            sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:1.0'
                             sh 'docker push ${DOCKER_USER}/${PROJECT_NAME}'
                         }
                     }
