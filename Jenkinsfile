@@ -59,7 +59,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'develop'
+                        branch 'jenkins-c'
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
@@ -80,7 +80,7 @@ pipeline {
         }
         stage('Publish To Docker Hub'){ 
             when {
-                branch 'develop' //develop
+                branch 'jenkins-c' //develop
             }
             steps{
                 withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
@@ -104,12 +104,9 @@ pipeline {
             }
         }*/
 
-
-
         stage('Promote To QA'){
             environment {
                 APP_PORT=9097
-
                 QA_HOME='/deployments/qa'
             }
             when {
