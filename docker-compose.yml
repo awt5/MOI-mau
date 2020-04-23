@@ -3,8 +3,6 @@ services:
   moi-database:
     image: mysql:5.7
     container_name: moi-db-compose
-    ports:
-      - "${DB_PORT}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
   moi-app:

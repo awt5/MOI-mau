@@ -6,9 +6,11 @@ pipeline {
             EMAIL_ME = 'mau.oroza1@gmail.com'
             //for dockerhub:
             PROJECT_NAME = 'moi-project'
+            PROJECT_VER = '1.0'
             DOCKER_CR = 'docker-credentials'
             USER_DOCKER_HUB = 'snip77'
     }
+
     stages{
         stage('Build MOI'){
             steps{
@@ -25,6 +27,7 @@ pipeline {
                 }
             }
         }
+
         stage('Sonarqube-Code Quality'){
             steps{
                 sh 'echo "Running SONAR SCAN"'
@@ -32,18 +35,20 @@ pipeline {
                 sh './gradlew sonarqube'
             }
         }
+
         stage('DeployToDevEnv'){
             environment {
                 APP_PORT=9096
-                DB_PORT=3036
             }
             steps{
                 sh 'echo "Deploying to DEV environment"'
+                sh 'docker-compose down -v'
                 sh 'docker-compose config'
                 sh 'docker-compose build'
                 sh 'docker-compose up -d'
             }
         }
+
         stage('Run Acceptance Tests'){
             steps{
                 echo 'Running acceptance testing'
@@ -55,11 +60,12 @@ pipeline {
                 }
             }
         }
+
         stage('Publishing to artifactory'){
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'jenkins-c'
+                        branch 'develop'
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
@@ -73,53 +79,89 @@ pipeline {
                     }
                     steps{
                         sh 'echo "publishing to release"'
-                        sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish'
+                        sh './gradlew -Partifactory_repokey=libs-release-local -Pmoi_version=1.0 artifactoryPublish'
                     }
                 }
             }
         }
-        stage('Publish To Docker Hub'){ 
-            when {
-                branch 'jenkins-c' //develop
-            }
-            steps{
-                withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
-                    sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v1.0-$BUILD_NUMBER'
-                    sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
+
+        stage('Publish To Docker Hub'){
+            parallel{
+                stage('Publish Develop'){ 
+                    when {
+                        branch 'develop' 
+                    }
+                    steps{
+                        withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
+                            sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v${PROJECT_VER}-$BUILD_NUMBER'
+                            sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
+                        }
+                    }
+                }
+
+                stage('Publish Release'){ 
+                    when {
+                        branch 'master'
+                    }
+                    steps{
+                        withDockerRegistry([ credentialsId: "${DOCKER_CREDIS}", url: "https://index.docker.io/v1/" ]) {
+                            sh 'docker tag ${PROJECT_NAME}:latest ${DOCKER_USER}/${PROJECT_NAME}:${PROJECT_VER}'
+                            sh 'docker push ${DOCKER_USER}/${PROJECT_NAME}'
+                        }
+                    }
                 }
             }
         }
-        stage('DeployToQAEnv'){
+
+        stage('Promote To QA'){
             environment {
                 APP_PORT=9097
-                DB_PORT=3037
+                QA_HOME='/deployments/qa'
+            }
+            when {
+                anyOf{
+                    branch 'develop'
+                    branch 'master'
+                }
             }
             steps{
+                sh 'docker-compose down -v'
+                sh 'cp docker-compose.yml $QA_HOME'
                 sh 'echo "Deploying to QA environment"'
-                sh 'docker-compose config'
-                sh 'docker-compose up -d'
+                sh 'docker-compose -f $QA_HOME/docker-compose.yml down -v'
+                sh 'docker-compose -f $QA_HOME/docker-compose.yml up -d'
             }
         }
+
         stage('Run Automation Tests'){
             when {
-                branch 'develop'
+                anyOf{
+                    branch 'develop'
+                    branch 'master'
+                }
             }
             steps{
                 echo 'Running automation tests'
             }
         }
+
         stage('Clean'){
             environment {
                 APP_PORT=9096
-                DB_PORT=3036
+
             }
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
                 sh 'docker rmi $(docker images -aq -f dangling=true)'
+                // deleteDir()
+                // dir("${workspace}@tmp") {
+                //     deleteDir()
+                // }
             }
         }
     }
+
     post {
         always {
             mail to: "${EMAIL_ADMIN}", 
