@@ -65,7 +65,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'jenkins-c'
+                        branch 'develop'
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
