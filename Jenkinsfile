@@ -17,7 +17,13 @@ pipeline {
                 sh 'echo "Start building app for moi-mau"'
                 sh 'echo "Giving gradle permissions..."'
                 sh 'chmod +x gradlew'
-                sh './gradlew clean build'
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        sh './gradlew -Pmoi_version=${PROJECT_VER} clean build'
+                    } else {
+                        sh './gradlew clean build'
+                    }
+                }
             }
             post {
                 success{
@@ -65,7 +71,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'jenkins-c'
+                        branch 'develop' //
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
@@ -79,7 +85,7 @@ pipeline {
                     }
                     steps{
                         sh 'echo "publishing to release"'
-                        sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish -Pmoi_version=1.0'
+                        sh './gradlew -Partifactory_repokey=libs-release-local -Pmoi_version=${PROJECT_VER} artifactoryPublish'
                     }
                 }
             }
