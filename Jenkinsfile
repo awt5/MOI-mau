@@ -71,7 +71,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'develop'
+                        branch 'develop' //
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
