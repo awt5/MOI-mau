@@ -99,7 +99,7 @@ pipeline {
                     }
                     steps{
                         withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
-                            sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v${PROJECT_VER}-$BUILD_NUMBER'
+                            sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:$BUILD_NUMBER'
                             sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
                         }
                     }
@@ -110,7 +110,7 @@ pipeline {
                         branch 'master'
                     }
                     steps{
-                        withDockerRegistry([ credentialsId: "${DOCKER_CREDIS}", url: "https://index.docker.io/v1/" ]) {
+                        withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
                             sh 'docker tag ${PROJECT_NAME}:latest ${DOCKER_USER}/${PROJECT_NAME}:${PROJECT_VER}'
                             sh 'docker push ${DOCKER_USER}/${PROJECT_NAME}'
                         }
