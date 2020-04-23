@@ -35,10 +35,10 @@ pipeline {
         stage('DeployToDevEnv'){
             environment {
                 APP_PORT=9096
-                DB_PORT=3036
             }
             steps{
                 sh 'echo "Deploying to DEV environment"'
+                sh 'docker-compose down -v'
                 sh 'docker-compose config'
                 sh 'docker-compose build'
                 sh 'docker-compose up -d'
@@ -59,7 +59,7 @@ pipeline {
             parallel{
                 stage('Publishing to local'){
                     when {
-                        branch 'jenkins-c'
+                        branch 'develop'
                     }
                     steps{
                         sh 'echo "Publishing to local..."'
@@ -80,7 +80,7 @@ pipeline {
         }
         stage('Publish To Docker Hub'){ 
             when {
-                branch 'jenkins-c' //develop
+                branch 'develop' //develop
             }
             steps{
                 withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
@@ -89,21 +89,40 @@ pipeline {
                 }
             }
         }
+
+        /*
         stage('DeployToQAEnv'){
             environment {
                 APP_PORT=9097
                 DB_PORT=3037
+                QA_HOME='/environment
             }
             steps{
                 sh 'echo "Deploying to QA environment"'
-                sh 'docker-compose config'
+                //sh 'docker-compose config'
                 sh 'docker-compose up -d'
             }
-        }
-        stage('Run Automation Tests'){
+        }*/
+
+
+
+        stage('Promote To QA'){
+            environment {
+                APP_PORT=9097
+
+                QA_HOME='/deployments/qa'
+            }
             when {
                 branch 'develop'
             }
+            steps{
+                sh 'cp docker-compose.yml $QA_HOME'
+                sh 'echo "Deploying to QA environment"'
+                sh 'docker-compose -f $QA_HOME/docker-compose.yml down -v'
+                sh 'docker-compose -f $QA_HOME/docker-compose.yml up -d'
+            }
+        }
+        stage('Run Automation Tests'){
             steps{
                 echo 'Running automation tests'
             }
@@ -111,12 +130,17 @@ pipeline {
         stage('Clean'){
             environment {
                 APP_PORT=9096
-                DB_PORT=3036
+
             }
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
                 sh 'docker rmi $(docker images -aq -f dangling=true)'
+
+                // deleteDir()
+                // dir("${workspace}@tmp") {
+                //     deleteDir()
+                // }
             }
         }
     }
