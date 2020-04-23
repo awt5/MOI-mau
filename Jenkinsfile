@@ -125,7 +125,7 @@ pipeline {
                 QA_HOME='/deployments/qa'
             }
             when {
-                branch 'develop'
+                branch 'jenkins-c'
             }
             steps{
                 sh 'cp docker-compose.yml $QA_HOME'
@@ -147,7 +147,7 @@ pipeline {
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
-                sh 'docker rmi $(docker images -aq -f dangling=true)'
+                //sh 'docker rmi $(docker images -aq -f dangling=true)'
 
                 // deleteDir()
                 // dir("${workspace}@tmp") {
