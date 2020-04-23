@@ -6,6 +6,7 @@ pipeline {
             EMAIL_ME = 'mau.oroza1@gmail.com'
             //for dockerhub:
             PROJECT_NAME = 'moi-project'
+            PROJECT_VER = '1.0'
             DOCKER_CR = 'docker-credentials'
             USER_DOCKER_HUB = 'snip77'
     }
@@ -84,11 +85,25 @@ pipeline {
             }
             steps{
                 withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
-                    sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v1.0-$BUILD_NUMBER'
+                    sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v${PROJECT_VER}-$BUILD_NUMBER'
                     sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
                 }
             }
         }
+
+        stage('Publish DockerHub Release'){ 
+            when {
+                branch 'master'
+            }
+            steps{
+                withDockerRegistry([ credentialsId: "${DOCKER_CREDIS}", url: "https://index.docker.io/v1/" ]) {
+                    sh 'docker tag ${PROJECT_NAME}:latest ${DOCKER_USER}/${PROJECT_NAME}:${PROJECT_VER}'
+                    sh 'docker push ${DOCKER_USER}/${PROJECT_NAME}'
+                }
+            }
+        }
+
+
 
         /*
         stage('DeployToQAEnv'){
