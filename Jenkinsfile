@@ -79,7 +79,7 @@ pipeline {
                     }
                     steps{
                         sh 'echo "publishing to release"'
-                        sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish -Pmoi_version=1.0'
+                        sh './gradlew -Partifactory_repokey=libs-release-local -Pmoi_version=1.0 artifactoryPublish'
                     }
                 }
             }
