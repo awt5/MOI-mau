@@ -10,6 +10,7 @@ pipeline {
             DOCKER_CR = 'docker-credentials'
             USER_DOCKER_HUB = 'snip77'
     }
+
     stages{
         stage('Build MOI'){
             steps{
@@ -26,6 +27,7 @@ pipeline {
                 }
             }
         }
+
         stage('Sonarqube-Code Quality'){
             steps{
                 sh 'echo "Running SONAR SCAN"'
@@ -33,6 +35,7 @@ pipeline {
                 sh './gradlew sonarqube'
             }
         }
+
         stage('DeployToDevEnv'){
             environment {
                 APP_PORT=9096
@@ -45,6 +48,7 @@ pipeline {
                 sh 'docker-compose up -d'
             }
         }
+
         stage('Run Acceptance Tests'){
             steps{
                 echo 'Running acceptance testing'
@@ -56,6 +60,7 @@ pipeline {
                 }
             }
         }
+
         stage('Publishing to artifactory'){
             parallel{
                 stage('Publishing to local'){
@@ -79,11 +84,12 @@ pipeline {
                 }
             }
         }
+
         stage('Publish To Docker Hub'){
             parallel{
                 stage('Publish Develop'){ 
                     when {
-                        branch 'jenkins-c' //develop
+                        branch 'develop' 
                     }
                     steps{
                         withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
@@ -107,7 +113,6 @@ pipeline {
             }
         }
 
-
         stage('Promote To QA'){
             environment {
                 APP_PORT=9097
@@ -115,7 +120,7 @@ pipeline {
             }
             when {
                 anyOf{
-                    branch 'jenkins-c'
+                    branch 'develop'
                     branch 'master'
                 }
             }
@@ -127,6 +132,7 @@ pipeline {
                 sh 'docker-compose -f $QA_HOME/docker-compose.yml up -d'
             }
         }
+
         stage('Run Automation Tests'){
             when {
                 anyOf{
@@ -138,6 +144,7 @@ pipeline {
                 echo 'Running automation tests'
             }
         }
+
         stage('Clean'){
             environment {
                 APP_PORT=9096
@@ -146,8 +153,7 @@ pipeline {
             steps{
                 sh 'echo "Cleaning..."'
                 sh 'docker-compose down -v'
-                //sh 'docker rmi $(docker images -aq -f dangling=true)'
-
+                sh 'docker rmi $(docker images -aq -f dangling=true)'
                 // deleteDir()
                 // dir("${workspace}@tmp") {
                 //     deleteDir()
@@ -155,6 +161,7 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             mail to: "${EMAIL_ADMIN}", 
