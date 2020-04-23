@@ -74,50 +74,39 @@ pipeline {
                     }
                     steps{
                         sh 'echo "publishing to release"'
-                        sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish'
+                        sh './gradlew -Partifactory_repokey=libs-release-local artifactoryPublish -Pmoi_version=1.0'
                     }
                 }
             }
         }
-        stage('Publish To Docker Hub'){ 
-            when {
-                branch 'jenkins-c' //develop
-            }
-            steps{
-                withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
-                    sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v${PROJECT_VER}-$BUILD_NUMBER'
-                    sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
+        stage stage('Publish To Docker Hub'){
+            parallel{
+                stage('Publish Develop'){ 
+                    when {
+                        branch 'jenkins-c' //develop
+                    }
+                    steps{
+                        withDockerRegistry([ credentialsId: "${DOCKER_CR}", url: "https://index.docker.io/v1/" ]) {
+                            sh 'docker tag ${PROJECT_NAME}:latest ${USER_DOCKER_HUB}/${PROJECT_NAME}:v${PROJECT_VER}-$BUILD_NUMBER'
+                            sh 'docker push ${USER_DOCKER_HUB}/${PROJECT_NAME}'
+                        }
+                    }
+                }
+
+                stage('Publish Release'){ 
+                    when {
+                        branch 'master'
+                    }
+                    steps{
+                        withDockerRegistry([ credentialsId: "${DOCKER_CREDIS}", url: "https://index.docker.io/v1/" ]) {
+                            sh 'docker tag ${PROJECT_NAME}:latest ${DOCKER_USER}/${PROJECT_NAME}:${PROJECT_VER}'
+                            sh 'docker push ${DOCKER_USER}/${PROJECT_NAME}'
+                        }
+                    }
                 }
             }
         }
 
-        stage('Publish DockerHub Release'){ 
-            when {
-                branch 'master'
-            }
-            steps{
-                withDockerRegistry([ credentialsId: "${DOCKER_CREDIS}", url: "https://index.docker.io/v1/" ]) {
-                    sh 'docker tag ${PROJECT_NAME}:latest ${DOCKER_USER}/${PROJECT_NAME}:${PROJECT_VER}'
-                    sh 'docker push ${DOCKER_USER}/${PROJECT_NAME}'
-                }
-            }
-        }
-
-
-
-        /*
-        stage('DeployToQAEnv'){
-            environment {
-                APP_PORT=9097
-                DB_PORT=3037
-                QA_HOME='/environment
-            }
-            steps{
-                sh 'echo "Deploying to QA environment"'
-                //sh 'docker-compose config'
-                sh 'docker-compose up -d'
-            }
-        }*/
 
         stage('Promote To QA'){
             environment {
@@ -125,7 +114,7 @@ pipeline {
                 QA_HOME='/deployments/qa'
             }
             when {
-                branch 'jenkins-c'
+                branch 'develop' /////
             }
             steps{
                 sh 'cp docker-compose.yml $QA_HOME'
@@ -135,6 +124,12 @@ pipeline {
             }
         }
         stage('Run Automation Tests'){
+            when {
+                anyOf{
+                    branch 'develop'
+                    branch 'master'
+                }
+            }
             steps{
                 echo 'Running automation tests'
             }
