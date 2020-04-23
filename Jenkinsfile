@@ -79,7 +79,7 @@ pipeline {
                 }
             }
         }
-        stage stage('Publish To Docker Hub'){
+        stage('Publish To Docker Hub'){
             parallel{
                 stage('Publish Develop'){ 
                     when {
